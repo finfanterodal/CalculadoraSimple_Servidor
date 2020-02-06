@@ -23,33 +23,39 @@ public class HiloServidor extends Thread {
     @Override
     public void run() {
         try {
+            while (sock.isConnected()) {
+                byte[] mensaje = new byte[25];
+                dis.read(mensaje);
+                String[] datos = new String(mensaje).split(",");
 
-            byte[] mensaje = new byte[25];
-            dis.read(mensaje);
-            String[] datos = new String(mensaje).split(",");
+                double operacion = 0;
+                switch (datos[2]) {
+                    case "+":
+                        operacion = Double.parseDouble(datos[0]) + Double.parseDouble(datos[1]);
+                        break;
+                    case "-":
+                        operacion = Double.parseDouble(datos[0]) - Double.parseDouble(datos[1]);
+                        break;
+                    case "*":
+                        operacion = Double.parseDouble(datos[0]) * Double.parseDouble(datos[1]);
+                        break;
+                    case "/":
+                        exceptionDivCero(Double.parseDouble(datos[1]));
+                        operacion = Double.parseDouble(datos[0]) / Double.parseDouble(datos[1]);
+                        break;
+                }
 
-            double operacion = 0;
-            switch (datos[2]) {
-                case "+":
-                    operacion = Double.parseDouble(datos[0]) + Double.parseDouble(datos[1]);
-                    break;
-                case "-":
-                    operacion = Double.parseDouble(datos[0]) - Double.parseDouble(datos[1]);
-                    break;
-                case "*":
-                    operacion = Double.parseDouble(datos[0]) * Double.parseDouble(datos[1]);
-                    break;
-                case "/":
-                    exceptionDivCero(Double.parseDouble(datos[1]));
-                    operacion = Double.parseDouble(datos[0]) / Double.parseDouble(datos[1]);
-                    break;
+                String resultado = String.valueOf(operacion) + ",";
+                dos.write(resultado.getBytes());
             }
-
-            String resultado = String.valueOf(operacion) + ",";
-            dos.write(resultado.getBytes());
-
-
-        } catch (IOException | Exceptions e) {
+        } catch (Exceptions e) {
+            e.getMessage();
+            try {
+                dos.write(e.getMessage().getBytes());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
         try {

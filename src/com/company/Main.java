@@ -12,7 +12,7 @@ public class Main {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket();
-            InetSocketAddress addr = new InetSocketAddress("192.168.0.4", 5555);
+            InetSocketAddress addr = new InetSocketAddress("192.168.0.15", 5555);
             serverSocket.bind(addr);
 
             int idSession = 0;
